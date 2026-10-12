@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Robert Alexander Salon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: one dark "noir" world with ivory chapters; a gold curtain carries you between pages. */
+:root{
+  --noir:#0E0C0A; --noir2:#181410; --noir3:#231D17;
+  --ivory:#F4EEE5; --sand:#E7DCCB; --stone:#BDB2A3; --taupe:#5F554A;
+  --gold:#C9A46C; --gold2:#E2C493; --golddeep:#8A6A3A;
+  --display:'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --body:'Jost', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme:dark;
+}
+html{scroll-behavior:auto;overflow-x:clip}
+body{margin:0;background:var(--noir);color:var(--ivory);font-family:var(--body);font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:clip}
+*{box-sizing:border-box}
+a{color:inherit}
+button{font-family:inherit}
+[v-cloak]{display:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+.eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.serif{font-family:var(--display)}
+h1,h2,h3{text-wrap:balance}
+.w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.06em;margin-bottom:-.06em}
+.wi{display:inline-block}
+em{font-style:italic;color:var(--gold)}
+
+/* preloader + curtain */
+.loader{position:fixed;inset:0;z-index:100;background:var(--noir);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+.loader .mono{font-family:var(--display);font-size:clamp(64px,10vw,120px);font-weight:300;letter-spacing:.06em;color:var(--ivory)}
+.loader .mono em{font-style:normal}
+.loader .bar{width:180px;height:1px;background:rgba(201,164,108,.25);overflow:hidden}
+.loader .bar i{display:block;height:100%;width:0;background:var(--gold)}
+.loader .pct{font-size:12px;letter-spacing:.3em;color:var(--stone);font-variant-numeric:tabular-nums}
+.curtain{position:fixed;inset:0;z-index:90;background:var(--gold);transform:translateY(100%);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.curtain span{font-family:var(--display);font-size:clamp(36px,6vw,72px);color:var(--noir);font-style:italic}
+
+/* cursor */
+.cursor{position:fixed;left:0;top:0;z-index:95;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--gold);pointer-events:none;mix-blend-mode:difference;transition:width .3s,height .3s,margin .3s;display:none;align-items:center;justify-content:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--noir)}
+.cursor.big{width:64px;height:64px;margin:-32px 0 0 -32px}
+.cursor.label{width:96px;height:96px;margin:-48px 0 0 -48px;mix-blend-mode:normal}
+@media (pointer:fine){.cursor{display:flex}}
+
+/* nav */
+.nav{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(14,12,10,.82);backdrop-filter:blur(14px);border-color:rgba(201,164,108,.16)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:24px;height:80px}
+.brand{display:flex;flex-direction:column;line-height:1;text-decoration:none;cursor:pointer;background:none;border:0;color:var(--ivory);padding:0;text-align:left}
+.brand b{font-family:var(--display);font-weight:500;font-size:23px;letter-spacing:.2em}
+.brand span{font-size:9.5px;letter-spacing:.44em;color:var(--gold);margin-top:7px}
+.links{display:flex;gap:30px}
+.links a{text-decoration:none;font-size:14px;letter-spacing:.06em;color:var(--sand);position:relative;padding:8px 0}
+.links a::after{content:'';position:absolute;left:0;bottom:2px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.links a:hover::after,.links a.on::after{transform:scaleX(1);transform-origin:left}
+.links a.on{color:var(--ivory)}
+.burger{display:none;width:48px;height:48px;border-radius:50%;border:1px solid rgba(201,164,108,.4);background:transparent;color:var(--ivory);cursor:pointer;align-items:center;justify-content:center}
+.overlay{position:fixed;inset:0;z-index:60;background:var(--noir);display:flex;flex-direction:column;justify-content:center;padding:96px 24px 40px;gap:8px}
+.overlay a{font-family:var(--display);font-size:46px;text-decoration:none;color:var(--ivory)}
+.overlay .close{position:absolute;top:16px;right:16px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 30px;border-radius:999px;font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:1px solid var(--gold);position:relative;overflow:hidden;font-weight:400;isolation:isolate}
+.btn::before{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.btn:hover::before{transform:none}
+.btn-gold{background:var(--gold);color:var(--noir)}
+.btn-gold::before{background:var(--ivory)}
+.btn-line{background:transparent;color:var(--ivory)}
+.btn-line::before{background:var(--gold)}
+.btn-line:hover{color:var(--noir)}
+.btn-dark{background:var(--noir);color:var(--ivory);border-color:var(--noir)}
+.btn-dark::before{background:var(--golddeep)}
+.light .btn-line{color:var(--noir);border-color:var(--golddeep)}
+
+/* placeholders standing in for photography */
+.ph{position:absolute;inset:0;background:
+  radial-gradient(120% 80% at 30% 20%,rgba(226,196,147,.28),transparent 55%),
+  radial-gradient(90% 70% at 80% 90%,rgba(138,106,58,.35),transparent 60%),
+  linear-gradient(160deg,#3A2F25,#1B1612);display:flex;align-items:flex-end;padding:22px;color:rgba(244,238,229,.7);font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+.ph.alt{background:radial-gradient(100% 80% at 70% 15%,rgba(244,238,229,.22),transparent 55%),radial-gradient(90% 70% at 10% 90%,rgba(201,164,108,.3),transparent 60%),linear-gradient(200deg,#4A3A2B,#211A14)}
+.ph.cool{background:radial-gradient(100% 80% at 50% 10%,rgba(231,220,203,.3),transparent 60%),linear-gradient(180deg,#5A4A3A,#2A221B)}
+
+/* hero */
+.hero{position:relative;min-height:min(900px,100svh);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center;padding-top:120px;padding-bottom:80px}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-family:var(--display);font-weight:300;font-size:clamp(54px,8.4vw,128px);line-height:.95;margin:22px 0 30px;letter-spacing:-.015em}
+.hero p{font-size:clamp(16px,1.3vw,19px);line-height:1.75;color:var(--stone);max-width:500px;margin:0 0 40px}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.arch{position:relative;aspect-ratio:3/4;max-width:100%;border-radius:999px 999px 28px 28px;overflow:hidden;border:1px solid rgba(201,164,108,.35)}
+.arch .ph{inset:-12% 0}
+.chip{position:absolute;left:-40px;bottom:64px;background:var(--ivory);color:var(--noir);border-radius:20px;padding:18px 22px;box-shadow:0 24px 50px rgba(0,0,0,.4);min-width:230px}
+.chip small{display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--taupe)}
+.chip b{display:block;font-family:var(--display);font-size:26px;font-weight:600;margin:4px 0 2px}
+.chip span{font-size:14px;color:var(--taupe)}
+.spin{position:absolute;right:-28px;top:40px;width:128px;height:128px;animation:rot 18s linear infinite}
+.spin text{font-size:10.5px;letter-spacing:3.4px;fill:var(--gold);text-transform:uppercase;font-family:var(--body)}
+.scrollhint{position:absolute;left:clamp(16px,4vw,40px);bottom:28px;display:flex;align-items:center;gap:12px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--stone)}
+.scrollhint i{display:block;width:1px;height:46px;background:linear-gradient(var(--gold),transparent);animation:drip 2.2s ease-in-out infinite;transform-origin:top}
+
+/* marquee */
+.marquee{background:var(--gold);color:var(--noir);overflow:hidden;white-space:nowrap;padding:24px 0}
+.mtrack{display:inline-flex;gap:56px;font-family:var(--display);font-size:clamp(26px,3vw,40px);font-style:italic;will-change:transform}
+.mtrack span::after{content:'✦';font-style:normal;font-size:15px;margin-left:56px;vertical-align:middle}
+
+/* sections */
+.sec{padding-block:clamp(80px,11vw,150px)}
+.light{background:var(--ivory);color:var(--noir)}
+.light .eyebrow{color:var(--golddeep)}
+.light em{color:var(--golddeep)}
+.h2{font-family:var(--display);font-weight:300;font-size:clamp(42px,5.6vw,84px);line-height:1.02;margin:16px 0 0;letter-spacing:-.01em}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:56px}
+.head p{max-width:440px;line-height:1.75;margin:0;color:var(--taupe)}
+.dark .head p,.head.dk p{color:var(--stone)}
+.statement{font-family:var(--display);font-weight:300;font-size:clamp(30px,4.2vw,62px);line-height:1.22;max-width:1100px;margin:0}
+.statement .sw{opacity:.16;display:inline-block;margin-right:.26em}
+
+/* horizontal */
+.hwrap{overflow:hidden}
+.htrack{display:flex;gap:28px;width:max-content;padding-inline:clamp(16px,4vw,40px)}
+.hcard{position:relative;width:min(420px,78vw);flex:none;border-radius:26px;overflow:hidden;background:var(--noir2);text-decoration:none;color:var(--ivory);display:block}
+.hcard .img{position:relative;aspect-ratio:4/5;overflow:hidden}
+.hcard .ph{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.hcard:hover .ph{transform:scale(1.09)}
+.hcard .body{padding:26px 26px 28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.hcard h3{font-family:var(--display);font-size:32px;font-weight:400;margin:0 0 6px}
+.hcard p{margin:0;color:var(--stone);font-size:14px;line-height:1.6}
+.hcard .pr{font-family:var(--display);font-size:24px;color:var(--gold);white-space:nowrap}
+.hcard .num{position:absolute;top:18px;left:20px;font-size:12px;letter-spacing:.3em;color:var(--ivory);z-index:2}
+
+/* before/after */
+.ba{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;align-items:center}
+.slider{position:relative;aspect-ratio:4/3;max-width:100%;border-radius:26px;overflow:hidden;border:1px solid rgba(201,164,108,.35);cursor:ew-resize;touch-action:pan-y;user-select:none}
+.slider .after{position:absolute;inset:0}
+.slider .before{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--s)) 0 0)}
+.slider .before .ph{filter:grayscale(1) brightness(.75)}
+.slider .tag{position:absolute;top:18px;padding:8px 14px;border-radius:999px;background:rgba(14,12,10,.7);font-size:11px;letter-spacing:.24em;text-transform:uppercase;z-index:3}
+.slider .handle{position:absolute;top:0;bottom:0;left:var(--s);width:2px;background:var(--gold);z-index:3}
+.slider .knob{position:absolute;top:50%;left:50%;width:58px;height:58px;transform:translate(-50%,-50%);border-radius:50%;background:var(--gold);color:var(--noir);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;border-top:1px solid rgba(201,164,108,.25);padding-top:48px}
+.stat b{display:block;font-family:var(--display);font-weight:300;font-size:clamp(48px,6vw,88px);color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:10px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+
+/* review marquee */
+.rrow{display:flex;gap:20px;width:max-content;will-change:transform}
+.rcard{width:360px;flex:none;background:var(--noir2);border:1px solid rgba(201,164,108,.18);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:14px}
+.rcard p{margin:0;font-family:var(--display);font-size:22px;line-height:1.35;font-style:italic;color:var(--ivory)}
+.rcard .who{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--stone)}
+.stars{color:var(--gold);letter-spacing:.25em;font-size:14px}
+.light .rcard{background:#fff;border-color:#E6DACA}
+.light .rcard p{color:var(--noir)}
+.light .rcard .who{color:var(--taupe)}
+
+/* final cta */
+.final{text-align:center;padding-block:clamp(110px,14vw,190px);position:relative;overflow:hidden}
+.final .h2{font-size:clamp(52px,8vw,124px)}
+.ring{position:absolute;left:50%;top:50%;width:min(900px,140vw);aspect-ratio:1;transform:translate(-50%,-50%);border:1px solid rgba(201,164,108,.18);border-radius:50%;pointer-events:none}
+.ring.r2{width:min(620px,100vw)}
+
+/* page hero (inner pages) */
+.phero{padding-top:170px;padding-bottom:70px}
+.phero h1{font-family:var(--display);font-weight:300;font-size:clamp(54px,9vw,140px);line-height:.95;margin:20px 0 0;letter-spacing:-.02em}
+.phero p{max-width:560px;color:var(--stone);line-height:1.75;font-size:17px;margin:28px 0 0}
+
+/* services */
+.tools{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:40px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{min-height:46px;padding:0 22px;border-radius:999px;border:1px solid #CDBFA9;background:transparent;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#3B342D;cursor:pointer;transition:background .3s,color .3s,border-color .3s}
+.tab:hover{border-color:var(--golddeep)}
+.tab.on{background:var(--noir);color:var(--ivory);border-color:var(--noir)}
+.search{display:flex;align-items:center;gap:10px;border:1px solid #CDBFA9;border-radius:999px;padding:0 18px;min-height:46px;min-width:0;flex:0 1 300px}
+.search input{border:0;background:transparent;font:inherit;font-size:15px;color:var(--noir);outline:none;width:100%;min-width:0}
+.svc{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:56px;align-items:start}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px}
+.row{display:flex;align-items:baseline;gap:12px;padding:20px 0;border-bottom:1px solid #E1D5C3;text-decoration:none;color:var(--noir)}
+.row .n{font-size:17px;font-weight:400}
+.row .n small{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-top:4px;font-weight:300}
+.row .dots{flex:1;border-bottom:1px dotted #B9A98F;transform:translateY(-5px);min-width:20px}
+.row .p{font-family:var(--display);font-size:23px;font-weight:600;white-space:nowrap}
+.row .p small{font-family:var(--body);font-size:11px;font-weight:400;letter-spacing:.14em;color:var(--taupe);margin-right:6px;text-transform:uppercase}
+.row .go{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--golddeep);opacity:0;transform:translateX(-8px);transition:all .35s}
+.row:hover .go{opacity:1;transform:none}
+.aside{position:sticky;top:110px;background:var(--noir);color:var(--ivory);border-radius:26px;padding:34px;display:flex;flex-direction:column;gap:18px}
+.aside h3{font-family:var(--display);font-weight:400;font-size:34px;line-height:1.1;margin:0}
+.aside p{margin:0;color:var(--stone);line-height:1.7}
+.empty{padding:40px 0;color:var(--taupe)}
+
+/* story */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:80px;align-items:start}
+.big-img{position:relative;height:clamp(320px,60vw,720px);border-radius:28px;overflow:hidden}
+.big-img .ph{inset:-15% 0}
+.tl{position:relative;padding-left:44px}
+.tl-line{position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:rgba(201,164,108,.25)}
+.tl-line i{position:absolute;inset:0;background:var(--gold);transform-origin:top;transform:scaleY(0)}
+.tl-item{position:relative;padding-bottom:52px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-44px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--noir);border:2px solid var(--gold)}
+.tl-item .y{font-size:12px;letter-spacing:.3em;color:var(--gold)}
+.tl-item h4{margin:8px 0 8px;font-family:var(--display);font-size:32px;font-weight:400}
+.tl-item p{margin:0;color:var(--stone);line-height:1.75}
+.brands{display:flex;gap:64px;width:max-content;font-family:var(--display);font-size:clamp(30px,4vw,54px);color:var(--golddeep);white-space:nowrap}
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.member .img{position:relative;aspect-ratio:3/4;border-radius:24px;overflow:hidden}
+.member .ph{transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.member:hover .ph{transform:scale(1.07)}
+.member h4{font-family:var(--display);font-size:30px;font-weight:400;margin:18px 0 4px}
+.member span{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--taupe)}
+
+/* gallery */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.filters .tab{color:var(--sand);border-color:rgba(201,164,108,.35)}
+.filters .tab.on{background:var(--gold);color:var(--noir);border-color:var(--gold)}
+.gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:240px;gap:14px;grid-auto-flow:dense}
+.g{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;border:0;padding:0;background:none;color:inherit;text-align:left}
+.g .ph{transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.g:hover .ph{transform:scale(1.08)}
+.g .cap{position:absolute;left:14px;bottom:14px;z-index:2;background:rgba(14,12,10,.78);padding:8px 14px;border-radius:999px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;transform:translateY(10px);opacity:0;transition:all .45s}
+.g:hover .cap,.g:focus-visible .cap{transform:none;opacity:1}
+.tall{grid-row:span 2}.wide{grid-column:span 2}
+.lb{position:fixed;inset:0;z-index:80;background:rgba(14,12,10,.94);display:flex;align-items:center;justify-content:center;padding:24px}
+.lb .frame{position:relative;width:min(880px,100%);aspect-ratio:4/3;border-radius:24px;overflow:hidden}
+.lb .x{position:absolute;top:20px;right:20px}
+.lb .cap2{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-family:var(--display);font-size:28px;font-style:italic}
+
+/* reviews page */
+.feature{max-width:980px;margin:0 auto;text-align:center}
+.feature .q{font-family:var(--display);font-weight:300;font-style:italic;font-size:clamp(30px,4vw,54px);line-height:1.25;margin:28px 0;min-height:3.8em;display:flex;align-items:center;justify-content:center}
+.feature .who{font-size:13px;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
+.ctl{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:36px}
+.round{width:52px;height:52px;border-radius:50%;border:1px solid rgba(201,164,108,.5);background:transparent;color:var(--ivory);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s}
+.round:hover{background:rgba(201,164,108,.18)}
+.dot{width:8px;height:8px;border-radius:8px;background:rgba(201,164,108,.3);transition:all .4s;border:0;padding:0;cursor:pointer}
+.dot.on{background:var(--gold);width:30px}
+.rgrid{columns:3 300px;column-gap:20px}
+.rgrid .rcard{width:auto;break-inside:avoid;margin-bottom:20px}
+
+/* contact */
+.cgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.ccard{background:#fff;border-radius:22px;padding:28px;border:1px solid #E6DACA;display:flex;flex-direction:column;gap:8px;min-width:0}
+.ccard h5{margin:0 0 6px;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--golddeep);font-weight:400}
+.ccard p{margin:0;line-height:1.7;font-size:16px;overflow-wrap:anywhere}
+.open{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:999px;background:#E7F1EA;color:#1E5C38;width:max-content}
+.open.closed{background:#F4E6E1;color:#8A3B22}
+.open i{width:8px;height:8px;border-radius:50%;background:currentColor;animation:blink 1.6s ease-in-out infinite}
+.copy{align-self:flex-start;margin-top:6px;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid #CDBFA9;background:transparent;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--noir)}
+.map{position:relative;min-height:420px;border-radius:26px;overflow:hidden;background-color:#E2D6C4;background-image:linear-gradient(rgba(138,106,58,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(138,106,58,.13) 1px,transparent 1px);background-size:46px 46px}
+.road{position:absolute;background:#F4EEE5}
+.pin{position:absolute;left:50%;top:48%;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2}
+.pin i{display:block;width:24px;height:24px;border-radius:50% 50% 50% 0;background:var(--noir);transform:rotate(-45deg);border:3px solid var(--gold)}
+.pin span{background:var(--noir);color:var(--ivory);padding:9px 16px;border-radius:999px;font-size:13px;white-space:nowrap}
+.pulse{position:absolute;left:50%;top:48%;width:24px;height:24px;margin:-6px 0 0 -12px;border-radius:50%;border:2px solid var(--golddeep);animation:pulse 2.2s ease-out infinite}
+.form{display:grid;gap:16px}
+.form label{display:grid;gap:8px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--taupe)}
+.form input,.form textarea{font:inherit;font-size:16px;text-transform:none;letter-spacing:0;color:var(--noir);background:#fff;border:1px solid #DCCFBD;border-radius:16px;padding:14px 16px;min-height:52px}
+.form textarea{min-height:120px;resize:vertical}
+.sent{padding:20px;border-radius:16px;background:#fff;border:1px solid #DCCFBD;line-height:1.7}
+
+/* footer + floating */
+.foot{border-top:1px solid rgba(201,164,108,.18);padding-block:56px 110px}
+.foot-in{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.foot .bigname{font-family:var(--display);font-weight:300;font-size:clamp(44px,8vw,120px);line-height:1;letter-spacing:.02em;margin:0 0 40px}
+.foot a,.foot button.lnk{color:var(--stone);text-decoration:none;background:none;border:0;padding:6px 0;cursor:pointer;font-size:14px}
+.foot a:hover,.foot button.lnk:hover{color:var(--gold)}
+.foot small{color:var(--taupe);font-size:12px;letter-spacing:.08em;line-height:1.7}
+.fcol{display:flex;flex-direction:column;gap:4px}
+.fcol h6{margin:0 0 8px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:400}
+.wa{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:40;width:60px;height:60px;border-radius:50%;background:#1E7A4C;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(0,0,0,.4);text-decoration:none}
+.wa::after{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid #1E7A4C;animation:pulse 2.4s ease-out infinite}
+.mbar{display:none}
+.demo{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:40;background:rgba(14,12,10,.85);border:1px solid rgba(201,164,108,.35);color:var(--sand);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:8px 14px;border-radius:999px}
+
+@keyframes rot{to{transform:rotate(360deg)}}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes pulse{from{transform:scale(1);opacity:.9}to{transform:scale(2.6);opacity:0}}
+@keyframes blink{50%{opacity:.35}}
+
+@media (max-width:960px){
+  .links,.nav .btn{display:none}
+  .burger{display:inline-flex}
+  .hero,.ba,.split,.svc,.cgrid{grid-template-columns:minmax(0,1fr)}
+  .hero{padding-top:110px;gap:40px}
+  .chip{left:12px;bottom:20px;min-width:0}
+  .spin{right:8px;top:12px;width:100px;height:100px}
+  .scrollhint{display:none}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .menu{grid-template-columns:minmax(0,1fr)}
+  .aside{position:static}
+  .gal{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:170px}
+  .team{grid-template-columns:minmax(0,1fr)}
+  .hwrap{overflow-x:auto;scroll-snap-type:x mandatory}
+  .hcard{scroll-snap-align:start}
+  .mbar{display:flex;position:fixed;left:12px;right:84px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:40}
+  .mbar .btn{flex:1}
+  .wa{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .demo{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="app" v-cloak>
+  <div class="loader" ref="loader" aria-hidden="true">
+    <div class="mono">R<em>A</em></div>
+    <div class="bar"><i ref="loadbar"></i></div>
+    <div class="pct" ref="pct">0</div>
+  </div>
+  <div class="curtain" ref="curtain" aria-hidden="true"><span>{{ curtainLabel }}</span></div>
+  <div class="cursor" ref="cursor" aria-hidden="true">{{ cursorText }}</div>
+
+  <header class="nav" :class="{solid: scrolled}">
+    <div class="wrap nav-in">
+      <button class="brand" type="button" @click="go('home')" aria-label="Robert Alexander Salon, home"><b>ROBERT ALEXANDER</b><span>SALON · DUBAI · SINCE 2008</span></button>
+      <nav class="links" aria-label="Main">
+        <a v-for="p in pages.slice(1)" :key="p.id" :href="'#'+p.id" :class="{on: page===p.id}" @click.prevent="go(p.id)">{{ p.label }}</a>
+      </nav>
+      <a class="btn btn-gold magnetic" :href="book" target="_blank" rel="noopener">Book now</a>
+      <button class="burger" type="button" aria-label="Open menu" @click="menuOpen=true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="overlay" v-if="menuOpen" role="dialog" aria-label="Menu">
+    <button class="round close" type="button" aria-label="Close menu" @click="menuOpen=false"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <a v-for="p in pages" :key="p.id" :href="'#'+p.id" @click.prevent="go(p.id)">{{ p.label }}</a>
+    <a class="btn btn-gold" :href="book" target="_blank" rel="noopener" style="font-family:var(--body);font-size:14px;margin-top:24px">Book now</a>
+  </div>
+
+  <main>
+  <!-- ============ HOME ============ -->
+  <template v-if="page==='home'">
+    <section class="wrap hero">
+      <canvas ref="dust" aria-hidden="true"></canvas>
+      <div>
+        <div class="eyebrow" data-fade>Hair &amp; beauty atelier · Barsha Heights, Dubai</div>
+        <h1 data-split>
+          <span class="w"><span class="wi">Hair</span></span> <span class="w"><span class="wi">that</span></span> <span class="w"><span class="wi">feels</span></span><br>
+          <span class="w"><span class="wi"><em>unmistakably</em></span></span><br>
+          <span class="w"><span class="wi">yours.</span></span>
+        </h1>
+        <p data-fade>Cuts, colour and blonde transformations by Robert and a team trained with L’Oréal Professionnel, Schwarzkopf and Toni &amp; Guy, in the heart of Dubai since 2008.</p>
+        <div class="cta" data-fade>
+          <a class="btn btn-gold magnetic" :href="book" target="_blank" rel="noopener">Book on Fresha <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-line magnetic" href="#services" @click.prevent="go('services')">Services &amp; prices</a>
+        </div>
+      </div>
+      <div style="position:relative" data-fade>
+        <div class="arch"><div class="ph" data-speed="1.2">Photo · Robert styling a client</div></div>
+        <svg class="spin" viewBox="0 0 128 128" aria-hidden="true"><defs><path id="circ" d="M64,64 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0"/></defs><text><textPath href="#circ">Book your transformation · since 2008 ·</textPath></text></svg>
+        <div class="chip"><small>Signature</small><b>Haircut by Robert</b><span>AED 285</span></div>
+      </div>
+      <div class="scrollhint"><i></i>Scroll</div>
+    </section>
+
+    <div class="marquee" aria-hidden="true"><div class="mtrack" ref="mtrack">
+      <span v-for="(m,i) in marqueeWords.concat(marqueeWords)" :key="i">{{ m }}</span>
+    </div></div>
+
+    <section class="sec wrap">
+      <div class="eyebrow" style="margin-bottom:28px">The salon</div>
+      <p class="statement" data-words><span v-for="(w,i) in statement" :key="i" class="sw">{{ w }} </span></p>
+    </section>
+
+    <section class="sec" style="padding-top:0" data-hsec>
+      <div class="wrap head dk">
+        <div><div class="eyebrow">Signature services</div><h2 class="h2">Made for you, <em>by Robert</em></h2></div>
+        <p>Every appointment starts with a conversation. Robert recommends what truly suits you, not what is trending.</p>
+      </div>
+      <div class="hwrap"><div class="htrack" ref="htrack">
+        <a v-for="(s,i) in signature" :key="s.n" class="hcard" :href="book" target="_blank" rel="noopener" data-cursor="Book">
+          <span class="num">0{{ i+1 }}</span>
+          <div class="img"><div class="ph" :class="s.tone">Photo · {{ s.photo }}</div></div>
+          <div class="body"><div><h3>{{ s.n }}</h3><p>{{ s.d }}</p></div><span class="pr">{{ s.p }}</span></div>
+        </a>
+      </div></div>
+    </section>
+
+    <section class="sec light">
+      <div class="wrap ba">
+        <div data-reveal>
+          <div class="eyebrow">Transformations</div>
+          <h2 class="h2">See the <em>difference</em></h2>
+          <p style="color:var(--taupe);line-height:1.75;margin:24px 0 32px;max-width:420px">Drag across the photo to compare before and after. Every look in the gallery gets its own slider.</p>
+          <a class="btn btn-line magnetic" href="#gallery" @click.prevent="go('gallery')">Open the lookbook</a>
+        </div>
+        <div data-reveal>
+          <div class="slider" :style="{'--s': split+'%'}" @pointerdown="baStart" @pointermove="baMove" @pointerup="baEnd" @pointerleave="baEnd" role="slider" aria-label="Before and after comparison" :aria-valuenow="split" aria-valuemin="0" aria-valuemax="100" tabindex="0" @keydown.left.prevent="split=Math.max(0,split-5)" @keydown.right.prevent="split=Math.min(100,split+5)">
+            <div class="after"><div class="ph alt">After · blonde highlights + curtain bangs</div></div>
+            <div class="before"><div class="ph cool">Before</div></div>
+            <span class="tag" style="left:18px">Before</span><span class="tag" style="right:18px">After</span>
+            <div class="handle"><div class="knob"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec wrap">
+      <div class="stats">
+        <div class="stat"><b data-count="2008" data-from="1990">2008</b><span>Founded</span></div>
+        <div class="stat"><b><span data-count="50">50</span>+</b><span>Services</span></div>
+        <div class="stat"><b><span data-count="3">3</span>+</b><span>Countries of training</span></div>
+        <div class="stat"><b data-count="7">7</b><span>Days a week</span></div>
+      </div>
+    </section>
+
+    <section class="sec" style="padding-top:0;overflow:hidden">
+      <div class="wrap head dk">
+        <div><div class="eyebrow">Client love</div><h2 class="h2">In their <em>words</em></h2></div>
+        <a class="btn btn-line magnetic" href="#reviews" @click.prevent="go('reviews')">All reviews</a>
+      </div>
+      <div class="rrow" data-row="1" style="margin-bottom:20px">
+        <div class="rcard" v-for="(r,i) in reviews.concat(reviews)" :key="'a'+i"><div class="stars">★★★★★</div><p>“{{ r.short }}”</p><div class="who">{{ r.name }}</div></div>
+      </div>
+      <div class="rrow" data-row="-1">
+        <div class="rcard" v-for="(r,i) in reviews.slice().reverse().concat(reviews.slice().reverse())" :key="'b'+i"><div class="stars">★★★★★</div><p>“{{ r.short }}”</p><div class="who">{{ r.name }}</div></div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ============ SERVICES ============ -->
+  <template v-if="page==='services'">
+    <section class="wrap phero">
+      <div class="eyebrow" data-fade>Services &amp; prices</div>
+      <h1 data-split><span class="w"><span class="wi">The</span></span> <span class="w"><span class="wi">full</span></span> <span class="w"><span class="wi"><em>menu</em></span></span></h1>
+      <p data-fade>Clear prices for every service. Pick a category or search, then book your time on Fresha in a few taps.</p>
+    </section>
+    <section class="sec light" style="padding-top:64px">
+      <div class="wrap">
+        <div class="tools">
+          <div class="tabs" role="tablist" aria-label="Service categories">
+            <button v-for="c in cats" :key="c.id" type="button" role="tab" :aria-selected="cat===c.id && !q" class="tab" :class="{on: cat===c.id && !q}" @click="cat=c.id; q=''">{{ c.label }}</button>
+          </div>
+          <label class="search" for="svc-search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <input id="svc-search" v-model="q" type="search" placeholder="Search a service, e.g. toner" aria-label="Search services">
+          </label>
+        </div>
+        <div class="svc">
+          <div>
+            <div class="menu" ref="menu">
+              <a v-for="it in items" :key="it.n" class="row" :href="book" target="_blank" rel="noopener">
+                <span class="n">{{ it.n }}<small v-if="q">{{ it.c }}</small></span><span class="dots"></span><span class="go">Book</span><span class="p"><small v-if="it.from">from</small>AED {{ it.p }}</span>
+              </a>
+            </div>
+            <p class="empty" v-if="!items.length">No service matches “{{ q }}”. Try another word, or ask us on WhatsApp.</p>
+            <p style="color:var(--taupe);font-size:14px;margin-top:28px">Prices in AED. “From” prices vary with hair length and thickness.</p>
+          </div>
+          <aside class="aside" data-reveal>
+            <div class="eyebrow">Not sure what to choose?</div>
+            <h3>Start with a chat with <em>Robert</em></h3>
+            <p>Tell us what you have in mind and we will suggest the right service and time.</p>
+            <a class="btn btn-gold magnetic" :href="book" target="_blank" rel="noopener">Book on Fresha</a>
+            <a class="btn btn-line" href="https://wa.me/971508846933" target="_blank" rel="noopener">WhatsApp us</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ============ STORY ============ -->
+  <template v-if="page==='story'">
+    <section class="wrap phero">
+      <div class="eyebrow" data-fade>Our story</div>
+      <h1 data-split><span class="w"><span class="wi">Eighteen</span></span> <span class="w"><span class="wi">years</span></span><br><span class="w"><span class="wi">of</span></span> <span class="w"><span class="wi"><em>craft</em></span></span></h1>
+    </section>
+    <section class="wrap"><div class="big-img"><div class="ph" data-speed="1.4">Photo · the salon at Media Rotana</div></div></section>
+    <section class="sec wrap split">
+      <div data-reveal>
+        <div class="eyebrow">Since 2008</div>
+        <p class="statement" style="font-size:clamp(28px,3.2vw,44px);margin-top:20px">Robert Alexander Salon has been in the beauty industry since 2008, and every year the team keeps learning.</p>
+        <p style="color:var(--stone);line-height:1.8;font-size:17px;margin-top:28px">Our team has enhanced its knowledge in hairstyling through comprehensive local and international training, run by the leading brands in the hair industry. With a growing business in Dubai, we are planning to expand to welcome more clients.</p>
+      </div>
+      <div class="tl" data-tl>
+        <div class="tl-line"><i></i></div>
+        <div class="tl-item" data-reveal><div class="y">2008</div><h4>The salon opens</h4><p>Robert Alexander Salon begins its journey in the beauty industry.</p></div>
+        <div class="tl-item" data-reveal><div class="y">Training</div><h4>Learning from the best</h4><p>L’Oréal Professionnel, Schwarzkopf International and Toni &amp; Guy Academy, in France, Germany, the United Kingdom and more.</p></div>
+        <div class="tl-item" data-reveal><div class="y">Today</div><h4>Media Rotana, Barsha Heights</h4><p>A warm, welcoming salon trusted by clients from all over Dubai.</p></div>
+        <div class="tl-item" data-reveal><div class="y">Next</div><h4>Growing with Dubai</h4><p>Expanding to welcome more clients, locally and internationally.</p></div>
+      </div>
+    </section>
+    <section class="light" style="padding-block:56px;overflow:hidden">
+      <div class="brands" ref="brands"><span>L’Oréal Professionnel</span><span>✦</span><span>Schwarzkopf</span><span>✦</span><span>Toni &amp; Guy Academy</span><span>✦</span><span>L’Oréal Professionnel</span><span>✦</span><span>Schwarzkopf</span><span>✦</span><span>Toni &amp; Guy Academy</span><span>✦</span></div>
+    </section>
+    <section class="sec light" style="padding-top:40px">
+      <div class="wrap">
+        <div class="head"><div><div class="eyebrow">The team</div><h2 class="h2">The hands behind <em>the hair</em></h2></div></div>
+        <div class="team">
+          <div class="member" data-reveal><div class="img"><div class="ph">Photo · Robert</div></div><h4>Robert</h4><span>Cuts &amp; colour</span></div>
+          <div class="member" data-reveal><div class="img"><div class="ph alt">Photo · Tony</div></div><h4>Tony</h4><span>Styling &amp; blow-dry</span></div>
+          <div class="member" data-reveal><div class="img"><div class="ph cool">Photo · the team</div></div><h4>The team</h4><span>Nails &amp; beauty</span></div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ============ GALLERY ============ -->
+  <template v-if="page==='gallery'">
+    <section class="wrap phero">
+      <div class="eyebrow" data-fade>Lookbook</div>
+      <h1 data-split><span class="w"><span class="wi">Recent</span></span> <span class="w"><span class="wi"><em>work</em></span></span></h1>
+      <p data-fade>Real results from the salon chair. Tap any look to see it full screen.</p>
+    </section>
+    <section class="wrap" style="padding-bottom:120px">
+      <div class="filters" role="tablist" aria-label="Filter looks">
+        <button v-for="f in galFilters" :key="f" type="button" class="tab" :class="{on: galFilter===f}" @click="galFilter=f">{{ f }}</button>
+      </div>
+      <div class="gal" ref="gal">
+        <button v-for="g in galItems" :key="g.n" type="button" class="g" :class="g.size" @click="lightbox=g" data-cursor="View" :aria-label="'View '+g.n">
+          <div class="ph" :class="g.tone">Photo</div><span class="cap">{{ g.n }}</span>
+        </button>
+      </div>
+    </section>
+    <div class="lb" v-if="lightbox" role="dialog" :aria-label="lightbox.n" @click.self="lightbox=null">
+      <div class="frame"><div class="ph" :class="lightbox.tone">Photo</div><div class="cap2">{{ lightbox.n }}</div></div>
+      <button class="round x" type="button" aria-label="Close" @click="lightbox=null"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </template>
+
+  <!-- ============ REVIEWS ============ -->
+  <template v-if="page==='reviews'">
+    <section class="wrap phero">
+      <div class="eyebrow" data-fade>Client reviews</div>
+      <h1 data-split><span class="w"><span class="wi">Loved</span></span> <span class="w"><span class="wi">across</span></span> <span class="w"><span class="wi"><em>Dubai</em></span></span></h1>
+    </section>
+    <section class="sec" style="background:var(--noir2)">
+      <div class="wrap feature">
+        <div class="stars" style="font-size:20px">★★★★★</div>
+        <p class="q" ref="fq">“{{ reviews[revIdx].short }}”</p>
+        <div class="who">{{ reviews[revIdx].name }} · {{ reviews[revIdx].date }}</div>
+        <div class="ctl">
+          <button class="round" type="button" aria-label="Previous review" @click="stepRev(-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button v-for="(r,i) in reviews" :key="i" type="button" class="dot" :class="{on: i===revIdx}" :aria-label="'Review '+(i+1)" @click="setRev(i)"></button>
+          <button class="round" type="button" aria-label="Next review" @click="stepRev(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+    <section class="sec light">
+      <div class="wrap">
+        <div class="head"><div><div class="eyebrow">Every review</div><h2 class="h2">Straight from <em>Google</em></h2></div><a class="btn btn-line magnetic" href="https://maps.app.goo.gl/4hWwihekcJjQ86cd6" target="_blank" rel="noopener">Leave a review</a></div>
+        <div class="rgrid">
+          <div class="rcard" v-for="r in reviews" :key="r.name" data-reveal><div class="stars">★★★★★</div><p>“{{ r.text }}”</p><div class="who">{{ r.name }} · {{ r.date }}</div></div>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ============ CONTACT ============ -->
+  <template v-if="page==='contact'">
+    <section class="wrap phero">
+      <div class="eyebrow" data-fade>Visit us</div>
+      <h1 data-split><span class="w"><span class="wi">We’re</span></span> <span class="w"><span class="wi">saving</span></span><br><span class="w"><span class="wi">you</span></span> <span class="w"><span class="wi">a</span></span> <span class="w"><span class="wi"><em>seat</em></span></span></h1>
+    </section>
+    <section class="sec light" style="padding-top:64px">
+      <div class="wrap split" style="gap:40px">
+        <div style="display:grid;gap:24px">
+          <div class="cgrid">
+            <div class="ccard" data-reveal><h5>Hours</h5><span class="open" :class="{closed: !openNow}"><i></i>{{ openNow ? 'Open now' : 'Closed now' }}</span><p>Monday – Sunday<br>10:00 am – 9:00 pm</p></div>
+            <div class="ccard" data-reveal><h5>Address</h5><p>Media Rotana Hotel<br>Barsha Heights, Dubai, UAE</p></div>
+            <div class="ccard" data-reveal><h5>Call</h5><p>+971 4 439 3537<br>+971 50 884 6933</p><button class="copy" type="button" @click="copyPhone">{{ copied ? 'Copied' : 'Copy number' }}</button></div>
+            <div class="ccard" data-reveal><h5>Email</h5><p>info@robertalexandersalon.com</p></div>
+          </div>
+          <div class="cta" data-reveal><a class="btn btn-dark magnetic" :href="book" target="_blank" rel="noopener">Book on Fresha</a><a class="btn btn-line" href="https://maps.app.goo.gl/4hWwihekcJjQ86cd6" target="_blank" rel="noopener">Get directions</a></div>
+        </div>
+        <div class="map" data-reveal role="img" aria-label="Map showing the salon at Media Rotana, Barsha Heights">
+          <div class="road" style="left:0;right:0;top:58%;height:26px"></div>
+          <div class="road" style="top:0;bottom:0;left:36%;width:18px"></div>
+          <div class="road" style="top:0;bottom:0;left:72%;width:12px;transform:skewX(-12deg)"></div>
+          <span class="pulse"></span>
+          <div class="pin"><span>Robert Alexander Salon</span><i></i></div>
+          <div style="position:absolute;left:20px;bottom:20px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--taupe)">Live Google map in the final site</div>
+        </div>
+      </div>
+      <div class="wrap" style="margin-top:80px;max-width:760px">
+        <div class="eyebrow">Send a message</div>
+        <h2 class="h2" style="margin-bottom:32px">Questions before <em>booking?</em></h2>
+        <form class="form" v-if="!sent" @submit.prevent="sent=true">
+          <label for="f-name">Name<input id="f-name" required autocomplete="name"></label>
+          <label for="f-phone">Phone or email<input id="f-phone" required></label>
+          <label for="f-msg">Message<textarea id="f-msg" required></textarea></label>
+          <button class="btn btn-dark" type="submit" style="justify-self:start">Send message</button>
+        </form>
+        <div class="sent" v-else>Thank you. In the live website this message goes straight to info@robertalexandersalon.com, and the team replies within a day.</div>
+      </div>
+    </section>
+  </template>
+
+  <section class="final" v-if="page!=='contact'">
+    <div class="ring"></div><div class="ring r2"></div>
+    <div class="wrap" style="position:relative">
+      <div class="eyebrow" data-reveal>Your next appointment</div>
+      <h2 class="h2" data-reveal>Ready for your <em>new look?</em></h2>
+      <div class="cta" style="justify-content:center;margin-top:44px" data-reveal>
+        <a class="btn btn-gold magnetic" :href="book" target="_blank" rel="noopener">Book on Fresha</a>
+        <a class="btn btn-line magnetic" href="https://wa.me/971508846933" target="_blank" rel="noopener">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p class="bigname">Robert <em>Alexander</em></p>
+      <div class="foot-in">
+        <div class="fcol"><h6>Pages</h6><button v-for="p in pages" :key="p.id" class="lnk" type="button" @click="go(p.id)">{{ p.label }}</button></div>
+        <div class="fcol"><h6>Visit</h6><small>Media Rotana Hotel<br>Barsha Heights, Dubai<br>Mon – Sun, 10 am – 9 pm</small></div>
+        <div class="fcol"><h6>Follow</h6><a href="https://www.instagram.com/robertalexandersalon/" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@robertalexandersalon" target="_blank" rel="noopener">TikTok</a><a href="https://www.facebook.com/RobertAlexanderSalon/" target="_blank" rel="noopener">Facebook</a></div>
+        <div class="fcol"><h6>Mockup</h6><small>Concept by FUSIONS for the 2026 rebrand.<br>Photos are placeholders.</small></div>
+      </div>
+    </div>
+  </footer>
+
+  <a class="wa" href="https://wa.me/971508846933" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 11.6A8.4 8.4 0 0 1 7.6 19L3.5 20.5 5 16.6A8.4 8.4 0 1 1 20 11.6Z"/><path d="M9 8.8c.3 2.6 2.4 4.9 5.2 5.5l1.1-1.2 1.7.8-.4 1.6c-3.8.3-8-3.6-8.3-7.4l1.6-.5.8 1.7Z"/></svg></a>
+  <div class="mbar"><a class="btn btn-gold" :href="book" target="_blank" rel="noopener">Book now</a></div>
+  <div class="demo">Interactive mockup · FUSIONS</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  if (!window.Vue) { return; }
+  const { createApp, ref, computed, nextTick, onMounted, watch } = Vue;
+  const G = window.gsap, ST = window.ScrollTrigger;
+  if (G && ST) G.registerPlugin(ST);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BOOK = 'https://www.fresha.com/a/robert-alexander-salon-dubai-media-rotana-barsha-heights-85ad9eef/booking?allOffer=true&menu=true&pId=224862';
+
+  const MENU = {
+    hair: ['Hair', [['Haircut by Robert','285'],['Haircut','245'],['Men’s haircut','120'],['Princess haircut','170'],['Fringe','55'],['Hairstyling','550'],['Wash & blow-dry, normal','130'],['Wash & blow-dry, wavy','150'],['Wash & blow-dry, curly','180'],['Front blowout','315',1],['Brazilian blowout','1,200',1],['Hair extension stickers (pair)','20']]],
+    colour: ['Colour', [['Highlights by Robert','680',1],['Lowlights by Robert','680',1],['Highlights','580',1],['Lowlights','580',1],['Half head highlights','350',1],['Full colour','415',1],['Organic full colour','475',1],['Organic roots colour','395',1],['Roots colour, zero ammonia','395',1],['Half roots colour','210'],['Colour application','210'],['Fabuloso toner','260'],['Toner','160'],['Colour fixing','210'],['Colour removal','265']]],
+    care: ['Treatments', [['Kérastase treatment','190'],['Kérastase water treatment','190'],['Caviar treatment','315'],['Fiber treatment','210'],['Dandruff treatment','265'],['Split end treatment','525'],['Pushdown treatment','840',1],['Head & shoulder massage, 15 min','55']]],
+    nails: ['Nails', [['Manicure','90'],['Pedicure','115'],['Gelish manicure','140'],['Gelish pedicure','160'],['Polish','55'],['Cut & file','35'],['Foot exfoliating spa','85'],['Foot scrub','55']]],
+    beauty: ['Beauty', [['Makeup','700',1],['Brow lifting / lamination','150'],['Eyelashes + application','65'],['Eyebrow threading','45'],['Upper lip threading','35'],['Full face threading','100']]]
+  };
+  const ALL = Object.keys(MENU).flatMap(k => MENU[k][1].map(x => ({ n: x[0], p: x[1], from: !!x[2], c: MENU[k][0] })));
+
+  const REVIEWS = [
+    { name: 'Iris Voskov', date: 'June 2026', short: 'Best hairdresser in Dubai! I finally found my place to go.', text: 'Best hairdresser in Dubai! The talent, the guidance, the service and the quality of work. Three years in Dubai and I finally found my place to go.' },
+    { name: 'Adina', date: 'September 2026', short: 'Robert really took the time to listen. I absolutely love my new haircut.', text: 'Robert really took the time to listen to what I wanted and gave me great advice. I absolutely love my new haircut, exactly the change I was looking for.' },
+    { name: 'Bengü Topçu', date: 'May 2026', short: 'By far the best bob haircut I had in Dubai.', text: 'By far the best bob haircut I had in Dubai. Strongly recommended for anyone looking for the exact look they want, especially short styles.' },
+    { name: 'Rim Atoui', date: 'May 2026', short: 'The colour looked natural, healthy and exactly what I wanted.', text: 'Professional, welcoming and attentive. I loved the hair colour result: natural, healthy and exactly what I wanted.' },
+    { name: 'Kristine Yagyagan', date: 'August 2026', short: 'He recommends a cut that truly suits you instead of following trends.', text: 'My first visit and absolutely worth it. Robert recommends a haircut that truly suits you instead of simply following trends. The salon was spotless.' },
+    { name: 'Elif Cevik', date: 'June 2026', short: 'Highlights, curtain bangs and blow-dry, exactly right.', text: 'Blonde highlights, curtain bangs and a blow-dry, and Robert got it exactly right. Also had a manicure during the highlights, which saved a lot of time.' },
+    { name: 'Rygin Guegue', date: 'August 2026', short: 'Thanks to Tony and all the staff for my dream hair.', text: 'Thanks to Tony and all the staff that made my dream hair come true. Very professional and accommodating.' },
+    { name: 'Daniel Maalouf', date: 'May 2026', short: 'The best hair salon in Dubai. Very professional!', text: 'The best hair salon in Dubai. Amazing service. Very professional!' },
+    { name: 'Eliana Medawar', date: 'May 2026', short: 'Always the best service, from colouring to blow-dries.', text: 'Always receiving the best service, from colouring to blow-dries and many other services. The team is very friendly.' },
+    { name: 'Ava Wood', date: 'August 2026', short: 'Very quick and efficient, and did a lovely job.', text: 'Very quick and efficient and did a lovely job.' }
+  ];
+
+  const GAL = [
+    { n: 'Bob cut', c: 'Cuts', size: 'tall', tone: '' }, { n: 'Blonde highlights', c: 'Colour', size: 'wide', tone: 'alt' },
+    { n: 'Curtain bangs', c: 'Cuts', size: '', tone: 'cool' }, { n: 'Signature blow-dry', c: 'Styling', size: 'tall', tone: 'alt' },
+    { n: 'Lowlights', c: 'Colour', size: '', tone: '' }, { n: 'Gelish manicure', c: 'Nails', size: '', tone: 'cool' },
+    { n: 'Long layers', c: 'Cuts', size: 'wide', tone: '' }, { n: 'Brazilian blowout', c: 'Styling', size: '', tone: 'cool' },
+    { n: 'Balayage', c: 'Colour', size: 'tall', tone: 'alt' }, { n: 'Pixie cut', c: 'Cuts', size: '', tone: '' },
+    { n: 'Bridal styling', c: 'Styling', size: 'wide', tone: 'cool' }, { n: 'Gelish pedicure', c: 'Nails', size: '', tone: 'alt' }
+  ];
+
+  let lenis = null, dustRaf = 0, marqueeTween = null, autoRev = 0;
+
+  createApp({
+    setup() {
+      const pages = [{ id: 'home', label: 'Home' }, { id: 'services', label: 'Services' }, { id: 'story', label: 'Our story' }, { id: 'gallery', label: 'Gallery' }, { id: 'reviews', label: 'Reviews' }, { id: 'contact', label: 'Contact' }];
+      const page = ref('home');
+      const menuOpen = ref(false);
+      const scrolled = ref(false);
+      const curtainLabel = ref('');
+      const cursorText = ref('');
+      const cat = ref('hair'), q = ref('');
+      const cats = Object.keys(MENU).map(id => ({ id, label: MENU[id][0] }));
+      const items = computed(() => {
+        const s = q.value.trim().toLowerCase();
+        if (s) return ALL.filter(x => x.n.toLowerCase().includes(s) || x.c.toLowerCase().includes(s));
+        return ALL.filter(x => x.c === MENU[cat.value][0]);
+      });
+      const split = ref(50); let dragging = false;
+      const galFilters = ['All', 'Cuts', 'Colour', 'Styling', 'Nails'];
+      const galFilter = ref('All');
+      const galItems = computed(() => galFilter.value === 'All' ? GAL : GAL.filter(g => g.c === galFilter.value));
+      const lightbox = ref(null);
+      const revIdx = ref(0);
+      const sent = ref(false), copied = ref(false);
+      const dubaiHour = () => (new Date().getUTCHours() + 4) % 24;
+      const openNow = ref(dubaiHour() >= 10 && dubaiHour() < 21);
+
+      const loader = ref(null), loadbar = ref(null), pct = ref(null), curtain = ref(null), cursor = ref(null);
+      const dust = ref(null), mtrack = ref(null), htrack = ref(null), menu = ref(null), gal = ref(null), fq = ref(null), brands = ref(null);
+
+      const signature = [
+        { n: 'Haircut by Robert', d: 'A tailored cut shaped around your features and lifestyle.', p: 'AED 285', photo: 'bob haircut', tone: '' },
+        { n: 'Highlights by Robert', d: 'Luminous, natural blonde with healthy shine.', p: 'from AED 680', photo: 'blonde highlights', tone: 'alt' },
+        { n: 'Kérastase rituals', d: 'Treatments that restore strength and softness.', p: 'from AED 190', photo: 'Kérastase ritual', tone: 'cool' },
+        { n: 'Brazilian blowout', d: 'Smooth, frizz-free hair that lasts for weeks.', p: 'from AED 1,200', photo: 'smooth blowout', tone: '' },
+        { n: 'Gelish nails', d: 'Manicure and pedicure with a long-lasting finish.', p: 'from AED 140', photo: 'gelish manicure', tone: 'alt' }
+      ];
+      const marqueeWords = ['Precision haircuts', 'Blonde transformations', 'Highlights by Robert', 'Kérastase rituals', 'Brazilian blowout', 'Gelish nails', 'Brow lamination'];
+      const statement = 'Since 2008, Robert Alexander Salon has shaped hair with patience and precision. Every cut starts with listening, every colour is built to look natural, healthy and entirely yours.'.split(' ');
+
+      /* ---------- animation engine ---------- */
+      function killPage() {
+        if (ST) ST.getAll().forEach(t => t.kill());
+        if (marqueeTween) { marqueeTween.kill(); marqueeTween = null; }
+        cancelAnimationFrame(dustRaf);
+        clearInterval(autoRev);
+      }
+      function magnetic(root) {
+        if (!G || !matchMedia('(pointer:fine)').matches) return;
+        root.querySelectorAll('.magnetic').forEach(el => {
+          if (el.dataset.mag) return; el.dataset.mag = '1';
+          el.addEventListener('mousemove', e => { const r = el.getBoundingClientRect(); G.to(el, { x: (e.clientX - r.left - r.width / 2) * .3, y: (e.clientY - r.top - r.height / 2) * .4, duration: .4, ease: 'power3.out' }); });
+          el.addEventListener('mouseleave', () => G.to(el, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)' }));
+        });
+      }
+      function startDust() {
+        const c = dust.value; if (!c || reduce) return;
+        const ctx = c.getContext('2d'); let w, h; const dpr = Math.min(devicePixelRatio || 1, 2);
+        const size = () => { w = c.clientWidth; h = c.clientHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+        size(); addEventListener('resize', size);
+        const ps = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .4, s: Math.random() * .0006 + .0002, a: Math.random() * .6 + .2, d: Math.random() * Math.PI * 2 }));
+        const tick = t => {
+          ctx.clearRect(0, 0, w, h);
+          ps.forEach(p => { p.y -= p.s; if (p.y < -.02) p.y = 1.02; const x = (p.x + Math.sin(t / 2600 + p.d) * .01) * w; ctx.beginPath(); ctx.arc(x, p.y * h, p.r, 0, 7); ctx.fillStyle = 'rgba(226,196,147,' + (p.a * (.6 + .4 * Math.sin(t / 900 + p.d))) + ')'; ctx.fill(); });
+          dustRaf = requestAnimationFrame(tick);
+        };
+        dustRaf = requestAnimationFrame(tick);
+      }
+      function initPage(first) {
+        killPage();
+        const root = document.querySelector('main');
+        magnetic(document);
+        if (page.value === 'home') startDust();
+        if (page.value === 'reviews') autoRev = setInterval(() => stepRev(1), 6500);
+        if (!G || reduce) return;
+        const d = first ? 1.25 : .35;
+        G.from(root.querySelectorAll('[data-split] .wi'), { yPercent: 115, rotate: 3, duration: 1.2, ease: 'power4.out', stagger: .07, delay: d });
+        G.from(root.querySelectorAll('[data-fade]'), { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: d + .35 });
+        if (!ST) return;
+        root.querySelectorAll('[data-reveal]').forEach(el => G.from(el, { y: 70, opacity: 0, duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true } }));
+        root.querySelectorAll('[data-speed]').forEach(el => G.fromTo(el, { yPercent: -8 * +el.dataset.speed }, { yPercent: 8 * +el.dataset.speed, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+        root.querySelectorAll('[data-count]').forEach(el => { const o = { v: +(el.dataset.from || 0) }; G.to(o, { v: +el.dataset.count, duration: 2, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true }, onUpdate: () => { el.textContent = Math.round(o.v); } }); });
+        const words = root.querySelectorAll('[data-words] .sw');
+        if (words.length) G.to(words, { opacity: 1, stagger: .05, ease: 'none', scrollTrigger: { trigger: root.querySelector('[data-words]'), start: 'top 80%', end: 'bottom 45%', scrub: true } });
+        if (mtrack.value) {
+          marqueeTween = G.to(mtrack.value, { xPercent: -50, duration: 30, ease: 'none', repeat: -1 });
+          ST.create({ onUpdate: self => { const v = Math.min(Math.abs(self.getVelocity()) / 250, 5); G.to(marqueeTween, { timeScale: (self.direction || 1) * (1 + v), duration: .2, overwrite: true }); G.to(marqueeTween, { timeScale: self.direction || 1, duration: 1.2, delay: .25 }); } });
+        }
+        root.querySelectorAll('[data-row]').forEach(r => { const dir = +r.dataset.row; G.fromTo(r, { xPercent: dir > 0 ? 0 : -50 }, { xPercent: dir > 0 ? -50 : 0, duration: 60, ease: 'none', repeat: -1 }); });
+        if (brands.value) G.to(brands.value, { xPercent: -50, duration: 26, ease: 'none', repeat: -1 });
+        if (htrack.value && matchMedia('(min-width: 961px)').matches) {
+          const t = htrack.value, sec = t.closest('.hwrap');
+          G.to(t, { x: () => -(t.scrollWidth - innerWidth), ease: 'none', scrollTrigger: { trigger: sec, start: 'top 12%', end: () => '+=' + (t.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 } });
+        }
+        const tl = root.querySelector('[data-tl]');
+        if (tl) G.to(tl.querySelector('.tl-line i'), { scaleY: 1, ease: 'none', scrollTrigger: { trigger: tl, start: 'top 75%', end: 'bottom 60%', scrub: true } });
+        ST.refresh();
+      }
+      function go(id) {
+        menuOpen.value = false; lightbox.value = null;
+        if (id === page.value) { scrollTop(); return; }
+        const label = pages.find(p => p.id === id).label;
+        curtainLabel.value = label;
+        if (!G || reduce) { page.value = id; scrollTop(); nextTick(() => initPage(false)); return; }
+        G.timeline()
+          .set(curtain.value, { y: 0, yPercent: 100 })
+          .to(curtain.value, { yPercent: 0, duration: .7, ease: 'power4.inOut' })
+          .add(() => { page.value = id; scrollTop(); })
+          .add(() => nextTick(() => initPage(false)), '+=0.05')
+          .to(curtain.value, { yPercent: -100, duration: .8, ease: 'power4.inOut' }, '+=0.15');
+      }
+      function scrollTop() { if (lenis) lenis.scrollTo(0, { immediate: true }); else window.scrollTo(0, 0); }
+
+      /* ---------- interactions ---------- */
+      const setSplit = e => { const r = e.currentTarget.getBoundingClientRect(); split.value = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)); };
+      const baStart = e => { dragging = true; e.currentTarget.setPointerCapture && e.currentTarget.setPointerCapture(e.pointerId); setSplit(e); };
+      const baMove = e => { if (dragging || e.pointerType === 'mouse') setSplit(e); };
+      const baEnd = () => { dragging = false; };
+      function setRev(i) {
+        if (G && fq.value && !reduce) G.fromTo(fq.value, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out' });
+        revIdx.value = (i + REVIEWS.length) % REVIEWS.length;
+      }
+      function stepRev(d) { setRev(revIdx.value + d); }
+      function copyPhone() {
+        const done = () => { copied.value = true; setTimeout(() => copied.value = false, 2000); };
+        try { navigator.clipboard.writeText('+971508846933').then(done, done); } catch (e) { done(); }
+      }
+      watch([cat, q], () => nextTick(() => { if (G && menu.value && !reduce) G.from(menu.value.querySelectorAll('.row'), { y: 18, opacity: 0, duration: .5, stagger: .025, ease: 'power2.out' }); }));
+      watch(galFilter, () => nextTick(() => { if (G && gal.value && !reduce) G.from(gal.value.children, { scale: .92, opacity: 0, duration: .6, stagger: .05, ease: 'power3.out' }); if (ST) ST.refresh(); }));
+
+      onMounted(() => {
+        addEventListener('scroll', () => { scrolled.value = scrollY > 40; }, { passive: true });
+        setInterval(() => { const h = dubaiHour(); openNow.value = h >= 10 && h < 21; }, 60000);
+        if (window.Lenis && !reduce) {
+          try {
+            lenis = new Lenis({ lerp: .09 });
+            if (ST) lenis.on('scroll', ST.update);
+            if (G) { G.ticker.add(t => lenis.raf(t * 1000)); G.ticker.lagSmoothing(0); }
+            else { const raf = t => { lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf); }
+          } catch (e) { lenis = null; }
+        }
+        if (G && cursor.value && matchMedia('(pointer:fine)').matches) {
+          const cx = G.quickTo(cursor.value, 'x', { duration: .35, ease: 'power3' }), cy = G.quickTo(cursor.value, 'y', { duration: .35, ease: 'power3' });
+          addEventListener('mousemove', e => { cx(e.clientX); cy(e.clientY); });
+          document.addEventListener('mouseover', e => {
+            const lab = e.target.closest('[data-cursor]'), hot = e.target.closest('a,button,input,textarea,.slider');
+            cursorText.value = lab ? lab.dataset.cursor : '';
+            cursor.value.classList.toggle('label', !!lab);
+            cursor.value.classList.toggle('big', !lab && !!hot);
+          });
+        }
+        if (G && !reduce) {
+          const o = { v: 0 };
+          G.timeline()
+            .to(o, { v: 100, duration: 1.1, ease: 'power2.inOut', onUpdate: () => { pct.value.textContent = Math.round(o.v); loadbar.value.style.width = o.v + '%'; } })
+            .to(loader.value, { yPercent: -100, duration: .9, ease: 'power4.inOut' }, '+=0.1')
+            .set(loader.value, { display: 'none' });
+        } else if (loader.value) loader.value.style.display = 'none';
+        nextTick(() => initPage(true));
+      });
+
+      return { pages, page, go, menuOpen, scrolled, curtainLabel, cursorText, book: BOOK, cats, cat, q, items, split, baStart, baMove, baEnd,
+        galFilters, galFilter, galItems, lightbox, reviews: REVIEWS, revIdx, setRev, stepRev, sent, copied, copyPhone, openNow,
+        signature, marqueeWords, statement, loader, loadbar, pct, curtain, cursor, dust, mtrack, htrack, menu, gal, fq, brands };
+    }
+  }).mount('#app');
+})();
+</script>
+
+</body>
+</html>
